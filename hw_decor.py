@@ -2,31 +2,32 @@ import time
 import pathlib
 
 
-def logger(old_function):
-    def new_function(*callable_args):
+def modified_logger(logger_path='log.txt'):
+    def logger(old_function):
+        def new_function(*callable_args):
 
-        result = old_function(*callable_args)
-        log_start_time = time.strftime("%d-%m-%Y, %H:%M:%S", time.localtime())
+            result = old_function(*callable_args)
+            log_start_time = time.strftime("%d-%m-%Y, %H:%M:%S", time.localtime())
 
-        if len(callable_args) == 1:
-            old_function_args = callable_args[0]
-        else:
-            old_function_args = callable_args
+            if len(callable_args) == 1:
+                old_function_args = callable_args[0]
+            else:
+                old_function_args = callable_args
 
-        with open('Log.txt', 'a') as f:
-            f.write(f'Время вызова - [{log_start_time}] \n')
-            f.write(f'Вызываемая функция - [{old_function.__name__}] \n')
-            f.write(f'Указанные аргументы - [{old_function_args}]-[{type(old_function_args)}] \n')
-            f.write(f'Результат выполнения функции - [{result}]-[{type(result)}] \n')
-            f.write(f'Путь к вызванному файлу - [{pathlib.Path.cwd()}] \n')
-            f.write('\n')
+            with open(logger_path, 'a') as f:
+                f.write(f'Время вызова - [{log_start_time}] \n')
+                f.write(f'Вызываемая функция - [{old_function.__name__}] \n')
+                f.write(f'Указанные аргументы - [{old_function_args}]-[{type(old_function_args)}] \n')
+                f.write(f'Результат выполнения функции - [{result}]-[{type(result)}] \n')
+                f.write(f'Путь к вызванному файлу - [{pathlib.Path.cwd()}] \n')
+                f.write('\n')
 
-        return result
+            return result
 
-    return new_function
+        return new_function
+    return logger
 
-
-@logger
+@modified_logger(r'C:\temp\log.txt')
 def sting_to_int_convertor(*args):
 
     if len(args) > 1:
